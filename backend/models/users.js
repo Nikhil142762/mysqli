@@ -8,16 +8,15 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     },
     name: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(255),
       allowNull: false
     },
     email: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-      unique:true
+      type: DataTypes.STRING(255),
+      allowNull: false
     },
     password: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(255),
       allowNull: false
     },
     phone: {
@@ -29,13 +28,29 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     image: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.INTEGER,
       allowNull: false
     },
-    // logintime: {
-    //   type: DataTypes.INTEGER,
-    //   allowNull: false
-    // }
+    logintime: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    otp: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    is_verify: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    role: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    status: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    }
   }, {
     sequelize,
     tableName: 'users',

@@ -1,59 +1,68 @@
-import React from 'react'
-
-function Navbar() {
-  return (
-    <>
-      <nav class="navbar navbar-expand-lg bg-body-tertiary navbar bg-primary" data-bs-theme="dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">About Us</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Contact Us</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#"></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#"></a>
-        </li>
-        {/* <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><hr class="dropdown-divider"/></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li> */}
-        {/* <li class="nav-item">
-          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-        </li> */}
-      </ul>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-    </div>
-  </div>
-</nav>
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
+import { Navbar, Nav, NavDropdown, Image } from 'react-bootstrap';
+import { User, Lock, LogOut  } from "react-feather";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
+function NavbarComponent() {
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
+    const logout = () => {
+        toast.info("user Logged out ");
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        setUser(null);
+        navigate("/signup");
+    }
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            const parsedUser = JSON.parse(storedUser);
+            setUser(parsedUser);
+        }
+    }, []);
+
+    return (
+        <>
+        <Navbar bg="light" variant="light" expand="lg" className="header-navbar navbar navbar-expand-lg align-items-center floating-nav navbar-shadow container-xxl mb-3">
+            <div className="navbar-container d-flex content">
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="ms-auto">
+                        <NavDropdown 
+                            title={<div className="d-flex align-items-center">
+                                    <div className="user-nav d-sm-flex d-none">
+                                        <span className=" text-dark" style={{color:"#141313 !important"}}> {user ? user.name : 'Guest'}</span>
+                                    </div>
+                                    <Image roundedCircle src={user?.image ? `http://localhost:1417/images/users/${user.image}` : 
+                                    `http://localhost:1417/images/users/default.png`} alt="avatar" height={40} width={40} className="ms-2" />
+                                </div>}id="dropdown-user" align="end"
+                        >
+                            <NavDropdown.Item as={Link} to="/profile">
+                            <User  width={22} height={18} />  Profile
+                            </NavDropdown.Item>
+                            <NavDropdown.Divider />
+                            <NavDropdown.Item as={Link} to={`/passwordreset/${user?.id}`}>
+                                <Lock width={22} height={18}  /> Change Password
+                            </NavDropdown.Item>
+                            <NavDropdown.Item onClick={logout}>
+                                <LogOut width={22}  height={18} /> Logout
+                            </NavDropdown.Item>
+                        </NavDropdown>
+                    </Nav>
+                </Navbar.Collapse>
+            </div>
+        </Navbar>
 
 
-    </>
-  )
+        <ToastContainer />
+
+        </>
+
+    )
 }
 
-export default Navbar
+export default NavbarComponent;

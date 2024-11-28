@@ -1,20 +1,23 @@
 var createError = require('http-errors');
+const { sequelize } = require('./models');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const port = 1417
-const cors = require("cors")
+const cors = require('cors');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const fileupload = require("express-fileupload")
 const bodyParser = require("body-parser")
+const session = require("express-session");
+
 var app = express();
-app.use(cors())
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -31,6 +34,13 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}))
+
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
@@ -41,6 +51,9 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
+
 
 app.listen(port,(req, res)=>{
   console.log(`app is ruuning on ${port}`);

@@ -1,19 +1,42 @@
 const imageupload = (file, folder = "users") => {
-    var image_name_chart = file.name;
-    var image_namne_arr = image_name_chart.split(".")
-    var image_ext = image_namne_arr[1]
-    var result = "";
-    var letters = "GFSHGCEFJUJVOFLJF87HJHDCEFWB"
-    while (result.length < 4) {
-        var radm_int = Math.floor(Math.random() * 19 + 1);
-        var rndm_chart = letters[radm_int]
-        if (result.substr(-1, 1) !== rndm_chart)
-            result += rndm_chart;
+    try {
+        const image_name_chart = file.name;
+        const image_namne_arr = image_name_chart.split(".");
+        const image_ext = image_namne_arr[1];
+
+        if (!image_ext) {
+            throw new Error("Invalid file type");
+        }
+
+        // Generate random filename
+        let result = "";
+        const letters = "GFSHGCEFJUJVOFLJF87HJHDCEFWB";
+        while (result.length < 2) {
+            const randomIndex = Math.floor(Math.random() * letters.length);
+            const randomChar = letters[randomIndex];
+            if (result.slice(-1) !== randomChar) {
+                result += randomChar;
+            }
+        }
+
+        const resultext = `${result}.${image_ext}`;
+        const filePath = `public/images/${folder}/${resultext}`;
+
+        // Attempt to move the file
+        file.mv(filePath, (err) => {
+            if (err) {
+                console.error("File move error:", err);
+                throw new Error("File upload failed");
+            }
+        });
+
+        return resultext;
+    } catch (error) {
+        console.error("Error in imageupload function:", error);
+        return null;
     }
-    var resultext = `${result}.${image_ext}`
-    file.mv(`public/images/users/${result}.${image_ext}`)
-    return resultext
-}
+};
+
 
 
 // const checkvalidation = async (v) => {
