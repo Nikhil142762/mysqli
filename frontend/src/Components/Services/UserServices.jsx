@@ -1,7 +1,5 @@
 import axios from "axios";
-
 const BASE_URL = 'http://localhost:1417';
-
 
 export const fetchUser = async(id)=>{
     try {
@@ -19,7 +17,6 @@ export const fetchallusers = async()=>{
     } catch (error) {
         console.log(error);
     }
-
 }
 
 export const updateuser = async(id)=>{
@@ -41,10 +38,9 @@ export const deleteuser = async()=>{
     }
 }
 
-
 export const addNewUser = async()=>{
     try {
-         const response = await axios.post(`${BASE_URL}/create`)  
+        const response = await axios.post(`${BASE_URL}/create`)  
         //  return response.data.body      
     } catch (error) {
         console.log(error);
@@ -54,6 +50,15 @@ export const addNewUser = async()=>{
 export const loginuser = async()=>{
     try {
         const response  = await axios.post(`${BASE_URL}/login`)        
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getuserMonth = async()=>{
+    try {
+        const response = await axios.get(`${BASE_URL}/getusersbymnt`)   
+        return response.mergedStats.data
     } catch (error) {
         console.log(error);
     }

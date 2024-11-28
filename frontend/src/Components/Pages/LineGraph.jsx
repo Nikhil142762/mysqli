@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
-import {fetchallusers} from "../Services/UserServices"
+import {fetchallusers, getuserMonth} from "../Services/UserServices"
 import {Chart as ChartJS,CategoryScale,LinearScale,PointElement,LineElement,Title,Tooltip,Legend,Filler,} from "chart.js";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
@@ -17,7 +17,18 @@ const LineGraph = () => {
     }
     useEffect(()=>{
       getusers()
+      graphusers()
     },[])
+
+    const graphusers = async()=>{
+      try {
+        const data = await getuserMonth()
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    
+
 
   const userData = [1,2,3,4,5,6,7,8,9,10,11,12];
   const canvasData = {

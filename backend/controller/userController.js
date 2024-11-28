@@ -9,6 +9,8 @@ const mysql = require("mysql2")
 const hashedPassword = require("password-hash");
 const { Json } = require("sequelize/lib/utils");
 const secretKey = "12345";
+const  { Op, fn, col }  = require( 'sequelize')
+
 
 module.exports = {
     create: async (req, res, id) => {
@@ -248,7 +250,7 @@ module.exports = {
                 // console.log('Stored hashed password:', storedHashedPassword);
                 const isPasswordMatch = await bcrypt.compare(oldPassword, storedHashedPassword);
                 if (!isPasswordMatch) {
-                    return res.status(400).json({ message: "Old password does not match" });
+                    return res.json({status:(400), message: "Old password does not match" });
                 }
                 if (newPassword !== confirmPassword) {
                     return res.status(400).json({ message: "New password and confirm password do not match" });
@@ -342,7 +344,45 @@ module.exports = {
         } catch (error) {
             console.log(error);
         }
-    }
+    },
+
+    getUsersByMonth: async (req, res) => {
+        try {
+                const userStats = await db.users.findAll({
+                attributes: [
+                    [fn('MONTH', col('createdAt')), 'month'], // Extract the month from `createdAt`
+                    [fn('COUNT', col('id')), 'userCount'],   // Count users
+                ],
+                  group: ['month'], // Group by the month
+                  order: [[fn('MONTH', col('createdAt')), 'ASC']], // Sort by month
+                });
+
+                const stats = userStats.map(stat => ({
+                month: stat.get('month'),
+                count: parseInt(stat.get('userCount')),
+                }));
+
+                const allMonths = Array.from({ length: 12 }, (_, index) => ({
+                month: index + 1,
+                count: 0, 
+                }));
+                
+                const mergedStats = allMonths.map(monthObj => {
+                const found = stats.find(stat => stat.month === monthObj.month);
+                return found ? found : monthObj; 
+                });
+            //   return userStats.map(stat => ({
+            //     month: stat.get('month'),
+            //     count: parseInt(stat.get('userCount')),
+            //   }));
+            return res.json({
+                status:200,data:mergedStats
+            })
+        } catch (error) {
+            console.log(error);
+        }
+        
+      }
 
 
 

@@ -15,10 +15,20 @@ function ResetPassword() {
 
     const handlePasswordChange = async () => {
         try {
-            const data = await axios.post(`http://localhost:1417/changePassword/${id}`) 
-            console.log(data);
+            if(!oldPassword || !newPassword || !confirmPassword){
+                return setErrorMessage("All fields are required")
+            }
+            const data = await axios.post(`http://localhost:1417/changePassword/${id}`,{
+                oldPassword,
+                newPassword,
+                confirmPassword
+            }) 
+            if(data){
+                console.log("asdf");
+            }
+            // console.log(data);
             
-            console.log(id,"----------");
+            // console.log(id,"----------");
         } catch (error) {
             console.log(error);
         }

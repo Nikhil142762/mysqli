@@ -24,6 +24,7 @@ router.delete("/delete/:id",user.delete)
 router.post("/changePassword/:id",user.changePassword)
 router.post("/updateProfile/:id",user.updateProfile)
 router.post("/statuschange",user.statusChange)
+router.get("/getusersbymnt",user.getUsersByMonth)
 
 // cms controller //
 router.post("/createe",cms.create)
